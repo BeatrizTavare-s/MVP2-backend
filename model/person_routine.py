@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, DateTime, Float, Boolean
+from sqlalchemy import Column, String, Integer, DateTime, Float
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from typing import Union
@@ -9,6 +9,7 @@ class PersonRoutine(Base):
     __tablename__ = 'person_routine'
     
     id = Column(Integer, primary_key=True)
+    nome = Column(String)
     genero_masculino = Column(Integer)
     idade = Column(Integer)
     historico_familiar_sobrepeso = Column(Integer)
@@ -30,36 +31,38 @@ class PersonRoutine(Base):
     outcome = Column("Diagnostic", Integer, nullable=True)
     data_insercao = Column(DateTime, default=datetime.now)
 
-    def __init__(self, genero_masculino: bool, idade: int, historico_familiar_sobrepeso: bool,
-                 consumo_alta_caloria_com_frequencia: bool, consumo_vegetais_com_frequencia: bool,
-                 refeicoes_dia: int, consumo_alimentos_entre_refeicoes: bool, fumante: bool,
-                 consumo_agua: float, monitora_calorias_ingeridas: bool, nivel_atividade_fisica: str,
-                 nivel_uso_tela: int, consumo_alcool: bool, transporte_automovel: bool, 
-                 transporte_bicicleta: bool, transporte_motocicleta: bool, transporte_publico: bool,
-                 transporte_caminhada: bool, outcome: int, data_insercao: Union[DateTime, None] = None):
+    def __init__(self, nome: str, genero_masculino: int, idade: int, historico_familiar_sobrepeso: int,
+                 consumo_alta_caloria_com_frequencia: int, consumo_vegetais_com_frequencia: int,
+                 refeicoes_dia: int, consumo_alimentos_entre_refeicoes: int, fumante: int,
+                 consumo_agua: float, monitora_calorias_ingeridas: int, nivel_atividade_fisica: str,
+                 nivel_uso_tela: int, consumo_alcool: int, transporte_automovel: int, 
+                 transporte_bicicleta: int, transporte_motocicleta: int, transporte_publico: int,
+                 transporte_caminhada: int, outcome: int, data_insercao: Union[DateTime, None] = None):
         """
         Cria uma rotina
         Arguments:
-            genero_masculino: bool - Gênero masculino
+            nome: str - Nome
+            genero_masculino:int - Gênero masculino
             idade: int - Idade da pessoa
-            historico_familiar_sobrepeso: bool - Histórico familiar de sobrepeso
-            consumo_alta_caloria_com_frequencia: bool - Consumo frequente de alimentos com alta caloria
-            consumo_vegetais_com_frequencia: bool - Consumo frequente de vegetais
+            historico_familiar_sobrepeso: int - Histórico familiar de sobrepeso
+            consumo_alta_caloria_com_frequencia: int - Consumo frequente de alimentos com alta caloria
+            consumo_vegetais_com_frequencia: int - Consumo frequente de vegetais
             refeicoes_dia: int - Número de refeições por dia
-            consumo_alimentos_entre_refeicoes: bool - Consumo de alimentos entre refeições
-            fumante: bool - Se a pessoa é fumante
+            consumo_alimentos_entre_refeicoes: int - Consumo de alimentos entre refeições
+            fumante: int - Se a pessoa é fumante
             consumo_agua: float - Consumo diário de água em litros
-            monitora_calorias_ingeridas: bool - Se monitora a ingestão de calorias
+            monitora_calorias_ingeridas: int - Se monitora a ingestão de calorias
             nivel_atividade_fisica: str - Nível de atividade física (Baixo, Moderado, Alto)
             nivel_uso_tela: int - Quantidade de horas de uso de tela por dia
-            consumo_alcool: bool - Se consome álcool
-            transporte_automovel: bool - Se utiliza automóvel como principal meio de transporte
-            transporte_bicicleta: bool - Se utiliza bicicleta como principal meio de transporte
-            transporte_motocicleta: bool - Se utiliza motocicleta como principal meio de transporte
-            transporte_publico: bool - Se utiliza transporte público
-            transporte_caminhada: bool - Se utiliza caminhada como meio de transporte
+            consumo_alcool: int - Se consome álcool
+            transporte_automovel: int - Se utiliza automóvel como principal meio de transporte
+            transporte_bicicleta: int - Se utiliza bicicleta como principal meio de transporte
+            transporte_motocicleta: int - Se utiliza motocicleta como principal meio de transporte
+            transporte_publico: int - Se utiliza transporte público
+            transporte_caminhada: int - Se utiliza caminhada como meio de transporte
             data_insercao: Union[DateTime, None] - Data de inserção do registro
         """
+        self.nome = nome
         self.genero_masculino = genero_masculino
         self.idade = idade
         self.historico_familiar_sobrepeso = historico_familiar_sobrepeso

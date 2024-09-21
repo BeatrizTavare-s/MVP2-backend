@@ -1,52 +1,52 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional, List
 from model.person_routine import PersonRoutine
-import json
-import numpy as np
 
 class PersonRoutineSchema(BaseModel):
     """ Define como uma nova rotina a ser inserido deve ser representado
     """
-    genero_masculino: int = 0  # Mulher
-    idade: int = 25  # Idade 25 anos
-    historico_familiar_sobrepeso: int = 0  # Sem histórico familiar de obesidade
-    consumo_alta_caloria_com_frequencia: int = 0  # Não consome alta caloria com frequência
-    consumo_vegetais_com_frequencia: int = 1  # Alto consumo de vegetais
-    refeicoes_dia: int = 3  # Três refeições por dia
-    consumo_alimentos_entre_refeicoes: int = 0  # Não consome alimentos entre refeições
-    fumante: int = 0  # Não fumante
-    consumo_agua: float = 2.3  # Consumo moderado de água
-    monitora_calorias_ingeridas: int = 1  # Monitora calorias ingeridas
-    nivel_atividade_fisica: int = 3  # Alto nível de atividade física
-    nivel_uso_tela: int = 1  # Uso moderado de telas
-    consumo_alcool: int = 0  # Não consome álcool
-    transporte_automovel: int = 0  # Não usa carro como principal transporte
-    transporte_bicicleta: int = 1  # Usa bicicleta
-    transporte_motocicleta: int = 0  # Não usa motocicleta
-    transporte_publico: int = 1  # Usa transporte público
-    transporte_caminhada: int = 1  # Caminha como meio de transporte
+    nome: str = Field(default="Maria", description="Nome do paciente")
+    genero_masculino: int = Field(default=1, description="0 para Mulher, 1 para Homem")
+    idade: int = Field(default=25, description="Idade do paciente")
+    historico_familiar_sobrepeso: int = Field(default=1, description="0 para Sem histórico, 1 para Com histórico")
+    consumo_alta_caloria_com_frequencia: int = Field(default=1, description="Não consome alta caloria com frequência")
+    consumo_vegetais_com_frequencia: int = Field(default=1, description="Alto consumo de vegetais")
+    refeicoes_dia: int = Field(default=3, description="Número de refeições por dia")
+    consumo_alimentos_entre_refeicoes: int = Field(default=1, description="Não consome alimentos entre refeições")
+    fumante: int = Field(default=1, description="0 para Não fumante, 1 para Fumante")
+    consumo_agua: float = Field(default=1, description="Consumo moderado de água")
+    monitora_calorias_ingeridas: int = Field(default=1, description="Monitora calorias ingeridas")
+    nivel_atividade_fisica: int = Field(default=3, description="Alto nível de atividade física")
+    nivel_uso_tela: int = Field(default=1, description="Uso moderado de telas")
+    consumo_alcool: int = Field(default=1, description="0 para Não consome álcool, 1 para Consome álcool")
+    transporte_automovel: int = Field(default=1, description="0 para Não usa carro, 1 para Usa carro")
+    transporte_bicicleta: int = Field(default=1, description="0 para Não usa bicicleta, 1 para Usa bicicleta")
+    transporte_motocicleta: int = Field(default=1, description="0 para Não usa motocicleta, 1 para Usa motocicleta")
+    transporte_publico: int = Field(default=1, description="0 para Não usa transporte público, 1 para Usa transporte público")
+    transporte_caminhada: int = Field(default=1, description="0 para Não caminha, 1 para Caminha")
 
     
 class PersonRoutineViewSchema(BaseModel):
     """Define como uma rotina será retornado
     """
     id: int = 1
-    genero_masculino: int = 0  # Mulher
+    nome: str = "Maria"
+    genero_masculino: int = 1  # Mulher
     idade: int = 25  # Idade 25 anos    
-    historico_familiar_sobrepeso: int = 0  # Sem histórico familiar de obesidade
-    consumo_alta_caloria_com_frequencia: int = 0  # Não consome alta caloria com frequência
+    historico_familiar_sobrepeso: int = 1  # Sem histórico familiar de obesidade
+    consumo_alta_caloria_com_frequencia: int = 1  # Não consome alta caloria com frequência
     consumo_vegetais_com_frequencia: int = 1  # Alto consumo de vegetais
     refeicoes_dia: int = 3  # Três refeições por dia
-    consumo_alimentos_entre_refeicoes: int = 0  # Não consome alimentos entre refeições
-    fumante: int = 0  # Não fumante
+    consumo_alimentos_entre_refeicoes: int = 1  # Não consome alimentos entre refeições
+    fumante: int = 1  # Não fumante
     consumo_agua: float = 2.2  # Consumo moderado de água
     monitora_calorias_ingeridas: int = 1  # Monitora calorias ingeridas
     nivel_atividade_fisica: int = 3  # Alto nível de atividade física
     nivel_uso_tela: int = 1  # Uso moderado de telas
-    consumo_alcool: int = 0  # Não consome álcool
-    transporte_automovel: int = 0  # Não usa carro como principal transporte
+    consumo_alcool: int = 1  # Não consome álcool
+    transporte_automovel: int = 1  # Não usa carro como principal transporte
     transporte_bicicleta: int = 1  # Usa bicicleta
-    transporte_motocicleta: int = 0  # Não usa motocicleta
+    transporte_motocicleta: int = 1  # Não usa motocicleta
     transporte_publico: int = 1  # Usa transporte público
     transporte_caminhada: int = 1  # Caminha como meio de transporte
     outcome: int = None
@@ -55,7 +55,7 @@ class PersonRoutineBuscaSchema(BaseModel):
     """Define como deve ser a estrutura que representa a busca.
     Ela será feita com base no nome do paciente.
     """
-    name: str = "Maria"
+    nome: str = "Maria"
 
 class ListaPersonRoutineSchema(BaseModel):
     """Define como uma lista de pacientes será representada
@@ -66,7 +66,7 @@ class ListaPersonRoutineSchema(BaseModel):
 class PersonRoutineDelSchema(BaseModel):
     """Define como um paciente para deleção será representado
     """
-    name: str = "Maria"
+    nome: str = "Maria"
     
 # Apresenta apenas os dados de um paciente    
 def apresenta_person_routine(person_routine: PersonRoutine):
@@ -74,6 +74,7 @@ def apresenta_person_routine(person_routine: PersonRoutine):
         HealthRoutineViewSchema.
     """
     return {
+        "nome": person_routine.nome,
         "genero_masculino": person_routine.genero_masculino,
         "idade": person_routine.idade,
         "historico_familiar_sobrepeso": person_routine.historico_familiar_sobrepeso,
@@ -105,6 +106,7 @@ def apresenta_person_routines(person_routine: List[PersonRoutine]):
     for person_routine in person_routine:
         result.append({
             "id": person_routine.id,
+            "nome": person_routine.nome,
             "genero_masculino": person_routine.genero_masculino,
             "idade": person_routine.idade,
             "historico_familiar_sobrepeso": person_routine.historico_familiar_sobrepeso,

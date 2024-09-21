@@ -51,32 +51,43 @@ def get_person_routines():
     else:
         logger.debug(f"%d person_routines econtrados" % len(person_routines))
         print(person_routines)
-        return apresenta_person_routine(person_routines), 200
+        return apresenta_person_routines(person_routines), 200
 
 
-# Rota de adição de paciente
+# Rota de adição de pessoas
 @app.post('/person_routine', tags=[person_routine_tag],
           responses={"200": PersonRoutineViewSchema, "400": ErrorSchema, "409": ErrorSchema})
 def predict(form: PersonRoutineSchema):
     """Adiciona um novo paciente à base de dados
-    Retorna uma representação dos pacientes e diagnósticos associados.
+    Retorna uma representação das pessoas e diagnósticos associados.
     
     Args:
-        name (str): nome do paciente
-        preg (int): número de vezes que engravidou: Pregnancies
-        plas (int): concentração de glicose no plasma: Glucose
-        pres (int): pressão diastólica (mm Hg): BloodPressure
-        skin (int): espessura da dobra cutânea do tríceps (mm): SkinThickness
-        test (int): insulina sérica de 2 horas (mu U/ml): Insulin
-        mass (float): índice de massa corporal (peso em kg/(altura em m)^2): BMI
-        pedi (float): função pedigree de diabetes: DiabetesPedigreeFunction
-        age (int): idade (anos): Age
+        nome (str): nome do paciente
+        genero_masculino (int): 1 se masculino, 0 se feminino.
+        idade (int): idade da pessoa.
+        historico_familiar_sobrepeso (int): 1 se há histórico, 0 se não.
+        consumo_alta_caloria_com_frequencia (int): 1 se consome frequentemente, 0 se não.
+        consumo_vegetais_com_frequencia (int): 1 se consome frequentemente, 0 se não.
+        refeicoes_dia (int): número de refeições por dia.
+        consumo_alimentos_entre_refeicoes (int): 1 se consome, 0 se não.
+        fumante (int): 1 se fuma, 0 se não.
+        consumo_agua (int): quantidade de água consumida em litros por dia.
+        monitora_calorias_ingeridas (int): 1 se monitora, 0 se não.
+        nivel_atividade_fisica (int): nível de atividade física em uma escala de 1 a 10.
+        nivel_uso_tela (int): nível de uso de telas em uma escala de 1 a 10.
+        consumo_alcool (int): 1 se consome álcool, 0 se não.
+        transporte_automovel (int): 1 se utiliza automóvel, 0 se não.
+        transporte_bicicleta (int): 1 se utiliza bicicleta, 0 se não.
+        transporte_motocicleta (int): 1 se utiliza motocicleta, 0 se não.
+        transporte_publico (int): 1 se utiliza transporte público, 0 se não.
+        transporte_caminhada (int): 1 se caminha, 0 se não.
         
     Returns:
         dict: representação do paciente e diagnóstico associado
     """
     print('dados vindo do form: ',form)
     # Recuperando os dados do formulário
+    nome = form.nome
     genero_masculino = form.genero_masculino
     idade = form.idade
     historico_familiar_sobrepeso = form.historico_familiar_sobrepeso
@@ -107,6 +118,7 @@ def predict(form: PersonRoutineSchema):
     outcome = int(Model.preditor(modelo, X_input)[0])
     
     person_routine = PersonRoutine(
+        nome=nome,
         genero_masculino=genero_masculino,
         idade=idade,
         historico_familiar_sobrepeso=historico_familiar_sobrepeso,
@@ -132,91 +144,85 @@ def predict(form: PersonRoutineSchema):
     try:
         # Criando conexão com a base
         session = Session()
-        
-        # Checando se paciente já existe na base
-        # if session.query(Paciente).filter(Paciente.name == form.name).first():
-        #     error_msg = "Paciente já existente na base :/"
-        #     logger.warning(f"Erro ao adicionar paciente '{person_routine.name}', {error_msg}")
-        #     return {"message": error_msg}, 409
-        
-        # Adicionando paciente
+        # Adicionando pessoa
         session.add(person_routine)
         # Efetivando o comando de adição
         session.commit()
         # Concluindo a transação
-        logger.debug(f"Adicionado paciente de nome: '{person_routine.id}'")
+        logger.debug(f"Adicionado rotina da pessoa de nome: '{person_routine.nome}'")
         return apresenta_person_routine(person_routine), 200
     
     # Caso ocorra algum erro na adição
     except Exception as e:
-        error_msg = "Não foi possível salvar novo item :/"
-        logger.warning(f"Erro ao adicionar paciente '{person_routine}', {error_msg}")
+        error_msg = "Não foi possível salvar nova rotina :/"
+        logger.warning(f"Erro ao adicionar nova rotina '{person_routine}', {error_msg}")
+        logger.error(f"Erro '{e}'")
         return {"message": error_msg}, 400
     
 
-# # Métodos baseados em nome
-# # Rota de busca de paciente por nome
-# @app.get('/paciente', tags=[person_routine_tag],
-#          responses={"200": PersonRoutineViewSchema, "404": ErrorSchema})
-# def get_paciente(query: PersonRoutineSchema):    
-#     """Faz a busca por um paciente cadastrado na base a partir do nome
+# Métodos baseados em nome
+# Rota de busca de paciente por nome
+@app.get('/person_routine', tags=[person_routine_tag],
+         responses={"200": PersonRoutineViewSchema, "404": ErrorSchema})
+def get_person_routine(query: PersonRoutineBuscaSchema):    
+    """Faz a busca por uma rotina cadastrado na base a partir do nome
 
-#     Args:
-#         nome (str): nome do paciente
+    Args:
+        nome (str): nome da pessoa
         
-#     Returns:
-#         dict: representação do paciente e diagnóstico associado
-#     """
+    Returns:
+        dict: representação do paciente e diagnóstico associado
+    """
     
-#     paciente_nome = query.name
-#     logger.debug(f"Coletando dados sobre produto #{paciente_nome}")
-#     # criando conexão com a base
-#     session = Session()
-#     # fazendo a busca
-#     paciente = session.query(Paciente).filter(Paciente.name == paciente_nome).first()
+    pessoa_nome = query.nome
+    logger.debug(f"Coletando dados sobre produto #{pessoa_nome}")
+    # criando conexão com a base
+    session = Session()
+    # fazendo a busca
+    person_routine = session.query(PersonRoutine).filter(PersonRoutine.nome == pessoa_nome).first()
     
-#     if not paciente:
-#         # se o paciente não foi encontrado
-#         error_msg = f"Paciente {paciente_nome} não encontrado na base :/"
-#         logger.warning(f"Erro ao buscar produto '{paciente_nome}', {error_msg}")
-#         return {"mesage": error_msg}, 404
-#     else:
-#         logger.debug(f"Paciente econtrado: '{paciente.name}'")
-#         # retorna a representação do paciente
-#         return apresenta_paciente(paciente), 200
+    if not  person_routine:
+        # se o  person_routine não foi encontrado
+        error_msg = f"Pessoa {pessoa_nome} não encontrado na base :/"
+        logger.warning(f"Erro ao buscar pessoa '{pessoa_nome}', {error_msg}")
+        return {"mesage": error_msg}, 404
+    else:
+        logger.debug(f"Pessoa encontrada: '{ person_routine.nome}'")
+        # retorna a representação da rotina da pessoa
+        return apresenta_person_routine(person_routine), 200
    
     
-# # Rota de remoção de paciente por nome
-# @app.delete('/paciente', tags=[paciente_tag],
-#             responses={"200": PacienteViewSchema, "404": ErrorSchema})
-# def delete_paciente(query: PacienteBuscaSchema):
-#     """Remove um paciente cadastrado na base a partir do nome
+# Rota de remoção de paciente por nome
+@app.delete('/person_routine', tags=[person_routine_tag],
+            responses={"200": PersonRoutineViewSchema, "404": ErrorSchema})
+def delete_paciente(query: PersonRoutineBuscaSchema):
+    """Remove um paciente cadastrado na base a partir do nome
 
-#     Args:
-#         nome (str): nome do paciente
+    Args:
+        nome (str): nome do paciente
         
-#     Returns:
-#         msg: Mensagem de sucesso ou erro
-#     """
+    Returns:
+        msg: Mensagem de sucesso ou erro
+    """
     
-#     paciente_nome = unquote(query.name)
-#     logger.debug(f"Deletando dados sobre paciente #{paciente_nome}")
+    person_routine_nome = unquote(query.nome)
+    logger.debug(f"Deletando dados sobre a rotina da pessoa #{person_routine_nome}")
     
-#     # Criando conexão com a base
-#     session = Session()
+    # Criando conexão com a base
+    session = Session()
     
-#     # Buscando paciente
-#     paciente = session.query(Paciente).filter(Paciente.name == paciente_nome).first()
+    # Buscando rotina
+    person_routine = session.query(PersonRoutine).filter(PersonRoutine.nome == person_routine_nome).first()
     
-#     if not paciente:
-#         error_msg = "Paciente não encontrado na base :/"
-#         logger.warning(f"Erro ao deletar paciente '{paciente_nome}', {error_msg}")
-#         return {"message": error_msg}, 404
-#     else:
-#         session.delete(paciente)
-#         session.commit()
-#         logger.debug(f"Deletado paciente #{paciente_nome}")
-#         return {"message": f"Paciente {paciente_nome} removido com sucesso!"}, 200
+    if not person_routine:
+        error_msg = "Rotina peesooa não encontrado na base :/"
+        logger.warning(f"Erro ao deletar paciente '{person_routine_nome}', {error_msg}")
+        return {"message": error_msg}, 404
+    else:
+        session.delete(person_routine)
+        session.commit()
+        logger.debug(f"Deletado rotina #{person_routine_nome}")
+        return {"message": f"Rotina {person_routine_nome} removido com sucesso!"}, 200
     
-# if __name__ == '__main__':
-#     app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
