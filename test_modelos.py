@@ -34,4 +34,4 @@ def test_modelo_knn():
     # Obtendo as métricas do KNN
     acuracia_knn = Avaliador.avaliar(modelo_knn, X, y)
     # Testando as métricas do KNN
-    assert acuracia_knn >= 0.78
+    assert acuracia_knn >= 0.80
