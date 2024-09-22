@@ -16,7 +16,7 @@ class Model:
         return model
     
     def preditor(model, X_input):
-        """Realiza a predição de um paciente com base no modelo treinado
+        """Realiza a predição de uma rotina da pessoa com base no modelo treinado
         """
         diagnosis = model.predict(X_input)
         return diagnosis

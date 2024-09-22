@@ -32,17 +32,17 @@ def home():
 @app.get('/person_routines', tags=[person_routine_tag],
          responses={"200": PersonRoutineViewSchema, "404": ErrorSchema})
 def get_person_routines():
-    """Lista todos os pacientes cadastrados na base
+    """Lista todos as rotinas cadastrados na base
     Args:
        none
         
     Returns:
-        list: lista de pacientes cadastrados na base
+        list: lista das rotinas cadastrados na base
     """
-    logger.debug("Coletando dados sobre todos os pacientes")
+    logger.debug("Coletando dados sobre todas as rotinas")
     # Criando conexão com a base
     session = Session()
-    # Buscando todos os pacientes
+    # Buscando todas as rotinas
     person_routines = session.query(PersonRoutine).all()
     
     if not person_routines:
@@ -58,11 +58,11 @@ def get_person_routines():
 @app.post('/person_routine', tags=[person_routine_tag],
           responses={"200": PersonRoutineViewSchema, "400": ErrorSchema, "409": ErrorSchema})
 def predict(form: PersonRoutineSchema):
-    """Adiciona um novo paciente à base de dados
+    """Adiciona uma nova rotina à base de dados
     Retorna uma representação das pessoas e diagnósticos associados.
     
     Args:
-        nome (str): nome do paciente
+        nome (str): nome da pessoa
         genero_masculino (int): 1 se masculino, 0 se feminino.
         idade (int): idade da pessoa.
         historico_familiar_sobrepeso (int): 1 se há histórico, 0 se não.
@@ -83,7 +83,7 @@ def predict(form: PersonRoutineSchema):
         transporte_caminhada (int): 1 se caminha, 0 se não.
         
     Returns:
-        dict: representação do paciente e diagnóstico associado
+        dict: representação da rotina da pessoa e diagnóstico associado
     """
     print('dados vindo do form: ',form)
     # Recuperando os dados do formulário
@@ -161,7 +161,7 @@ def predict(form: PersonRoutineSchema):
     
 
 # Métodos baseados em nome
-# Rota de busca de paciente por nome
+# Rota de busca da rotina por nome
 @app.get('/person_routine', tags=[person_routine_tag],
          responses={"200": PersonRoutineViewSchema, "404": ErrorSchema})
 def get_person_routine(query: PersonRoutineBuscaSchema):    
@@ -171,7 +171,7 @@ def get_person_routine(query: PersonRoutineBuscaSchema):
         nome (str): nome da pessoa
         
     Returns:
-        dict: representação do paciente e diagnóstico associado
+        dict: representação da rotina e diagnóstico associado
     """
     
     pessoa_nome = query.nome
@@ -192,14 +192,15 @@ def get_person_routine(query: PersonRoutineBuscaSchema):
         return apresenta_person_routine(person_routine), 200
    
     
-# Rota de remoção de paciente por nome
+# Rota de remoção da rotina por nome
 @app.delete('/person_routine', tags=[person_routine_tag],
+
             responses={"200": PersonRoutineViewSchema, "404": ErrorSchema})
-def delete_paciente(query: PersonRoutineBuscaSchema):
-    """Remove um paciente cadastrado na base a partir do nome
+def delete_person_routine(query: PersonRoutineBuscaSchema):
+    """Remove uma rotina cadastrado na base a partir do nome
 
     Args:
-        nome (str): nome do paciente
+        nome (str): nome da pessoa
         
     Returns:
         msg: Mensagem de sucesso ou erro
@@ -216,7 +217,7 @@ def delete_paciente(query: PersonRoutineBuscaSchema):
     
     if not person_routine:
         error_msg = "Rotina peesooa não encontrado na base :/"
-        logger.warning(f"Erro ao deletar paciente '{person_routine_nome}', {error_msg}")
+        logger.warning(f"Erro ao deletar person_routine '{person_routine_nome}', {error_msg}")
         return {"message": error_msg}, 404
     else:
         session.delete(person_routine)

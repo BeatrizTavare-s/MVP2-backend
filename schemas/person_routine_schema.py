@@ -5,9 +5,9 @@ from model.person_routine import PersonRoutine
 class PersonRoutineSchema(BaseModel):
     """ Define como uma nova rotina a ser inserido deve ser representado
     """
-    nome: str = Field(default="Maria", description="Nome do paciente")
+    nome: str = Field(default="Maria", description="Nome da pessoa")
     genero_masculino: int = Field(default=1, description="0 para Mulher, 1 para Homem")
-    idade: int = Field(default=25, description="Idade do paciente")
+    idade: int = Field(default=25, description="Idade da pessoa")
     historico_familiar_sobrepeso: int = Field(default=1, description="0 para Sem histórico, 1 para Com histórico")
     consumo_alta_caloria_com_frequencia: int = Field(default=1, description="Não consome alta caloria com frequência")
     consumo_vegetais_com_frequencia: int = Field(default=1, description="Alto consumo de vegetais")
@@ -53,24 +53,24 @@ class PersonRoutineViewSchema(BaseModel):
     
 class PersonRoutineBuscaSchema(BaseModel):
     """Define como deve ser a estrutura que representa a busca.
-    Ela será feita com base no nome do paciente.
+    Ela será feita com base no nome da pessoa.
     """
     nome: str = "Maria"
 
 class ListaPersonRoutineSchema(BaseModel):
-    """Define como uma lista de pacientes será representada
+    """Define como uma lista de pessoas será representada
     """
     person_routine: List[PersonRoutineBuscaSchema]
 
     
 class PersonRoutineDelSchema(BaseModel):
-    """Define como um paciente para deleção será representado
+    """Define como uma pessoa para deleção será representado
     """
     nome: str = "Maria"
     
-# Apresenta apenas os dados de um paciente    
+# Apresenta apenas os dados de uma rotina de pessoa    
 def apresenta_person_routine(person_routine: PersonRoutine):
-    """ Retorna uma representação do paciente seguindo o schema definido em
+    """ Retorna uma representação da rotina de pessoa seguindo o schema definido em
         HealthRoutineViewSchema.
     """
     return {
@@ -97,10 +97,10 @@ def apresenta_person_routine(person_routine: PersonRoutine):
         "outcome": person_routine.outcome
     }
     
-# Apresenta uma lista de pacientes
+# Apresenta uma lista de rotinas de pessoas
 def apresenta_person_routines(person_routine: List[PersonRoutine]):
-    """ Retorna uma representação do paciente seguindo o schema definido em
-        PacienteViewSchema.
+    """ Retorna uma representação da rotina de pessoas seguindo o schema definido em
+        PersonRoutineViewSchema.
     """
     result = []
     for person_routine in person_routine:
